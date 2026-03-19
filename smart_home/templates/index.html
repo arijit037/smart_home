@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Home AI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="overlay">
+
+    <div class="card">
+        <h1>🏠 Smart Home AI</h1>
+
+        <input type="number" id="temp" placeholder="🌡 Enter Temperature">
+
+        <select id="motion">
+            <option value="no">No Motion</option>
+            <option value="yes">Motion Detected</option>
+        </select>
+
+        <select id="time">
+            <option value="auto">Auto Time</option>
+            <option value="day">Day Mode</option>
+            <option value="night">Night Mode</option>
+        </select>
+
+        <button onclick="send()">Analyze</button>
+
+        <div id="result" class="result-box"></div>
+    </div>
+
+</div>
+
+<script>
+function send() {
+    let temp = document.getElementById("temp").value;
+    let motion = document.getElementById("motion").value;
+    let time = document.getElementById("time").value;
+
+    fetch("/smart", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            temperature: temp,
+            motion: motion,
+            time: time
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("result").innerHTML = `
+            <p>❄️ AC: <b>${data.ac}</b></p>
+            <p>🔥 Heater: <b>${data.heater}</b></p>
+            <p>💡 Light: <b>${data.light}</b></p>
+            <p>🚨 Security: <b>${data.security}</b></p>
+        `;
+    });
+}
+</script>
+
+</body>
+</html>
